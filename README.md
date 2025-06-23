@@ -21,7 +21,7 @@ A powerful semantic search tool for git repositories using LanceDB. Search your 
 
 ### Installation
 
-Using uv (recommended):
+#### Option 1: Global Installation (Recommended)
 ```bash
 # Install uv
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -30,13 +30,23 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 git clone https://github.com/yourusername/git-blame-search.git
 cd git-blame-search
 
+# Install globally from local directory
+uv tool install .
+```
+
+#### Option 2: Local Development
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/git_blame_search.git
+cd git_blame_search
+
 # Install dependencies
 uv sync
 ```
 
-Using pip:
+#### Option 3: Using pip (after publishing to PyPI)
 ```bash
-pip install lancedb sentence-transformers click rich gitpython flask pyarrow
+pip install git_blame_search
 ```
 
 ## Usage
@@ -45,58 +55,61 @@ pip install lancedb sentence-transformers click rich gitpython flask pyarrow
 
 ```bash
 # Index current repository (recent 100 commits)
-uv run python git_blame_tool.py index --max-commits 100
+git_blame_search index --max-commits 100
 
 # Index a specific repository
-uv run python git_blame_tool.py index --repo /path/to/repo --max-commits 500
+git_blame_search index --repo /path/to/repo --max-commits 500
 
 # For testing with minimal commits (e.g., new repos)
-uv run python git_blame_tool.py index --max-commits 1
+git_blame_search index --max-commits 1
 ```
 
 ### 2. Index Specific Files for Blame Analysis
 
 ```bash
 # Index blame data for important files
-uv run python git_blame_tool.py index-file main.py
-uv run python git_blame_tool.py index-file src/core/auth.py
+git_blame_search index-file main.py
+git_blame_search index-file src/core/auth.py
 ```
 
 ### 3. Search Commits
 
 ```bash
 # For testing in a new (this) repository
-uv run python git_blame_tool.py search "init"
+git_blame_search search "init"
 
 # Search by natural language
-uv run python git_blame_tool.py search "authentication implementation"
-uv run python git_blame_tool.py search "bug fix for memory leak"
-uv run python git_blame_tool.py search "refactoring database layer" --limit 20
+git_blame_search search "authentication implementation"
+git_blame_search search "bug fix for memory leak"
+git_blame_search search "refactoring database layer" --limit 20
 ```
 
 ### 4. Semantic Blame Search
 
 ```bash
 # Find who wrote specific functionality
-uv run python git_blame_tool.py blame "error handling logic"
-uv run python git_blame_tool.py blame "database connection" --file src/db.py
+git_blame_search blame "error handling logic"
+git_blame_search blame "database connection" --file src/db.py
 ```
 
 ### 5. Author Attribution
 
 ```bash
 # Find who implemented features
-uv run python git_blame_tool.py who "authentication system"
-uv run python git_blame_tool.py who "caching implementation"
+git_blame_search who "authentication system"
+git_blame_search who "caching implementation"
 ```
 
 ## Continue Integration
 
-### 1. Start the HTTP Server
+### 1. Index Your Repository First
 
 ```bash
-uv run python git_blame_tool.py serve
-# Server starts on http://localhost:5000
+# Index your repository before using MCP
+git_blame_search index --max-commits 100
+
+# Optionally index specific files for blame analysis
+git_blame_search index-file src/main.py
 ```
 
 ### 2. Configure Continue
@@ -104,17 +117,16 @@ uv run python git_blame_tool.py serve
 Add to your `~/.continue/config.yml`:
 
 ```yml
-context:
-  - name: http
-    params:
-      url: http://localhost:5000/retrieve
-      title: Git Blame Search
-      description: Search git history and blame data
+mcpServers:
+  git_blame_search:
+    command: git_blame_search
+    args: ["mcp"]
+    cwd: "/path/to/your-project-repo"
 ```
 
 ### 3. Use in VSCode
 
-- Type `@Git Blame Search` in Continue chat
+- Use `@git_blame_search` in Continue chat
 - Ask questions like "who implemented the auth system?"
 
 ## Example Queries
