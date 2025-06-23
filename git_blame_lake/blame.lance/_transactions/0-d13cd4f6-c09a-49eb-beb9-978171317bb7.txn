@@ -1,0 +1,3 @@
+$d13cd4f6-c09a-49eb-beb9-978171317bb7²·+	file_path ÿÿÿÿÿÿÿÿÿ*string08Zdefault.line_number ÿÿÿÿÿÿÿÿÿ*int3208Zdefault/commit_hash ÿÿÿÿÿÿÿÿÿ*string08Zdefault/author_name ÿÿÿÿÿÿÿÿÿ*string08Zdefault4	timestamp ÿÿÿÿÿÿÿÿÿ*timestamp:s:-08Zdefault0code_content ÿÿÿÿÿÿÿÿÿ*string08ZdefaultBcode_vector ÿÿÿÿÿÿÿÿÿ*fixed_size_list:float:76808Zdefault"'
+lance.auto_cleanup.older_than14days"!
+lance.auto_cleanup.interval20

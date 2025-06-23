@@ -101,21 +101,15 @@ uv run python git_blame_tool.py serve
 
 ### 2. Configure Continue
 
-Add to your `~/.continue/config.json`:
+Add to your `~/.continue/config.yml`:
 
-```json
-{
-  "contextProviders": [
-    {
-      "name": "http",
-      "params": {
-        "url": "http://localhost:5000/retrieve",
-        "title": "Git Blame Search",
-        "description": "Search git history and blame data"
-      }
-    }
-  ]
-}
+```yml
+context:
+  - name: http
+    params:
+      url: http://localhost:5000/retrieve
+      title: Git Blame Search
+      description: Search git history and blame data
 ```
 
 ### 3. Use in VSCode
