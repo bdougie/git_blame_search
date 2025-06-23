@@ -1,0 +1,18 @@
+[project]
+name = "git-blame-search"
+version = "0.1.0"
+requires-python = ">=3.9"
+dependencies = [
+    "lancedb>=0.5.0",
+    "sentence-transformers>=2.2.0",
+    "click>=8.0.0",
+    "rich>=13.0.0",
+    "gitpython>=3.1.0",
+    "flask>=3.0.0",
+    "pyarrow>=14.0.0",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "ipython>=8.0.0",
+]
