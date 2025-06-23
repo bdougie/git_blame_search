@@ -427,5 +427,123 @@ def serve():
     console.print("[bold green]Starting Continue integration server on http://localhost:5000[/bold green]")
     app.run(port=5000)
 
+@cli.command()
+def mcp():
+    """Start MCP server for Continue integration"""
+    import asyncio
+    import json
+    import sys
+    
+    async def handle_mcp():
+        indexer = GitBlameIndexer()
+        
+        while True:
+            try:
+                line = sys.stdin.readline()
+                if not line:
+                    break
+                    
+                request = json.loads(line.strip())
+                
+                if request.get('method') == 'tools/list':
+                    response = {
+                        'jsonrpc': '2.0',
+                        'id': request.get('id'),
+                        'result': {
+                            'tools': [
+                                {
+                                    'name': 'search_commits',
+                                    'description': 'Search git commits using natural language',
+                                    'inputSchema': {
+                                        'type': 'object',
+                                        'properties': {
+                                            'query': {'type': 'string', 'description': 'Natural language search query'},
+                                            'limit': {'type': 'integer', 'description': 'Number of results (default: 10)'}
+                                        },
+                                        'required': ['query']
+                                    }
+                                },
+                                {
+                                    'name': 'search_blame',
+                                    'description': 'Search code blame data using natural language',
+                                    'inputSchema': {
+                                        'type': 'object',
+                                        'properties': {
+                                            'query': {'type': 'string', 'description': 'Natural language search query'},
+                                            'file_path': {'type': 'string', 'description': 'Optional file path to filter'},
+                                            'limit': {'type': 'integer', 'description': 'Number of results (default: 10)'}
+                                        },
+                                        'required': ['query']
+                                    }
+                                },
+                                {
+                                    'name': 'who_wrote',
+                                    'description': 'Find who wrote code matching a query',
+                                    'inputSchema': {
+                                        'type': 'object',
+                                        'properties': {
+                                            'query': {'type': 'string', 'description': 'Natural language search query'},
+                                            'limit': {'type': 'integer', 'description': 'Number of results (default: 5)'}
+                                        },
+                                        'required': ['query']
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                    
+                elif request.get('method') == 'tools/call':
+                    tool_name = request['params']['name']
+                    args = request['params']['arguments']
+                    
+                    if tool_name == 'search_commits':
+                        results = indexer.search_commits(args['query'], args.get('limit', 10))
+                        content = '\n'.join([
+                            f"**{r['commit_hash'][:8]}** by {r['author_name']} on {r['timestamp']}\n{r['message']}"
+                            for r in results
+                        ])
+                        
+                    elif tool_name == 'search_blame':
+                        results = indexer.search_blame(args['query'], args.get('file_path'), args.get('limit', 10))
+                        content = '\n'.join([
+                            f"**{r['file_path']}:{r['line_number']}** by {r['author_name']}\n{r['code_content']}"
+                            for r in results
+                        ])
+                        
+                    elif tool_name == 'who_wrote':
+                        results = indexer.who_wrote(args['query'], args.get('limit', 5))
+                        content = '\n'.join([
+                            f"**{r['name']}**: {r['commits']} commits, {r['lines']} lines"
+                            for r in results
+                        ])
+                    
+                    response = {
+                        'jsonrpc': '2.0',
+                        'id': request.get('id'),
+                        'result': {
+                            'content': [{'type': 'text', 'text': content}]
+                        }
+                    }
+                else:
+                    response = {
+                        'jsonrpc': '2.0',
+                        'id': request.get('id'),
+                        'error': {'code': -32601, 'message': 'Method not found'}
+                    }
+                
+                print(json.dumps(response))
+                sys.stdout.flush()
+                
+            except Exception as e:
+                error_response = {
+                    'jsonrpc': '2.0',
+                    'id': request.get('id') if 'request' in locals() else None,
+                    'error': {'code': -32603, 'message': str(e)}
+                }
+                print(json.dumps(error_response))
+                sys.stdout.flush()
+    
+    asyncio.run(handle_mcp())
+
 if __name__ == '__main__':
     cli()

@@ -1,6 +1,23 @@
 [project]
-name = "git-blame-search"
+name = "git_blame_search"
 version = "0.1.0"
+description = "Semantic search tool for git repositories using LanceDB"
+authors = [{name = "Your Name", email = "your.email@example.com"}]
+readme = "README.md"
+license = {text = "MIT"}
+homepage = "https://github.com/yourusername/git_blame_search"
+repository = "https://github.com/yourusername/git_blame_search"
+keywords = ["git", "blame", "search", "semantic", "vector", "lancedb"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
 requires-python = ">=3.9"
 dependencies = [
     "lancedb>=0.5.0",
@@ -13,7 +30,20 @@ dependencies = [
     "pandas>=2.3.0",
 ]
 
+[project.scripts]
+git_blame_search = "git_blame_tool:cli"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+include = ["git_blame_tool.py"]
+
 [tool.uv]
 dev-dependencies = [
     "ipython>=8.0.0",
+    "build>=0.10.0",
+    "twine>=4.0.0",
 ]
