@@ -4,10 +4,11 @@ A powerful semantic search tool for git repositories using LanceDB. Search your 
 
 ## Features
 
-- = **Semantic Search**: Search commits, code changes, and blame data using natural language
+- =
+ **Semantic Search**: Search commits, code changes, and blame data using natural language
 - =e **Author Attribution**: Find who implemented specific features or functionality
-- =Ê **Code Evolution**: Track how code has changed over time
-- =€ **Fast Indexing**: Efficient vector indexing with LanceDB
+- =ï¿½ **Code Evolution**: Track how code has changed over time
+- =ï¿½ **Fast Indexing**: Efficient vector indexing with LanceDB
 - = **IDE Integration**: Works with Continue for in-editor code intelligence
 - < **HTTP API**: REST endpoint for integration with other tools
 
@@ -49,6 +50,9 @@ uv run python git_blame_tool.py index --max-commits 100
 
 # Index a specific repository
 uv run python git_blame_tool.py index --repo /path/to/repo --max-commits 500
+
+# For testing with minimal commits (e.g., new repos)
+uv run python git_blame_tool.py index --max-commits 1
 ```
 
 ### 2. Index Specific Files for Blame Analysis
@@ -62,6 +66,9 @@ uv run python git_blame_tool.py index-file src/core/auth.py
 ### 3. Search Commits
 
 ```bash
+# For testing in a new (this) repository
+uv run python git_blame_tool.py search "init"
+
 # Search by natural language
 uv run python git_blame_tool.py search "authentication implementation"
 uv run python git_blame_tool.py search "bug fix for memory leak"
