@@ -44,11 +44,6 @@ cd git_blame_search
 uv sync
 ```
 
-#### Option 3: Using pip (after publishing to PyPI)
-```bash
-pip install git_blame_search
-```
-
 ## Usage
 
 ### 1. Index Your Repository
@@ -105,7 +100,7 @@ git_blame_search who "caching implementation"
 ### 1. Index Your Repository First
 
 ```bash
-# Index your repository before using MCP
+# Index your repository before using MCP. It will take a minute on mature projects.
 git_blame_search index --max-commits 100
 
 # Optionally index specific files for blame analysis
@@ -118,15 +113,16 @@ Add to your `~/.continue/config.yml`:
 
 ```yml
 mcpServers:
-  git_blame_search:
+  - name: git_blame_search
     command: git_blame_search
-    args: ["mcp"]
-    cwd: "/path/to/your-project-repo"
+    args:
+      - mcp
+    cwd: "."
 ```
 
 ### 3. Use in VSCode
 
-- Use `@git_blame_search` in Continue chat
+- Use `git_blame_search` in Continue chat
 - Ask questions like "who implemented the auth system?"
 
 ## Example Queries
