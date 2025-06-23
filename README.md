@@ -99,7 +99,7 @@ uv run python git_blame_tool.py serve
 # Server starts on http://localhost:5000
 ```
 
-### 2. Configure Continue
+### 2. [Configure Continue](https://docs.continue.dev/customize/context-providers#built-in-context-providers)
 
 Add to your `~/.continue/config.yml`:
 
