@@ -4,13 +4,12 @@ A powerful semantic search tool for git repositories using LanceDB. Search your 
 
 ## Features
 
-- =
- **Semantic Search**: Search commits, code changes, and blame data using natural language
-- =e **Author Attribution**: Find who implemented specific features or functionality
-- =� **Code Evolution**: Track how code has changed over time
-- =� **Fast Indexing**: Efficient vector indexing with LanceDB
-- = **IDE Integration**: Works with Continue for in-editor code intelligence
-- < **HTTP API**: REST endpoint for integration with other tools
+- 🔍 **Semantic Search**: Search commits, code changes, and blame data using natural language
+- 👤 **Author Attribution**: Find who implemented specific features or functionality
+- 📈 **Code Evolution**: Track how code has changed over time
+- ⚡ **Fast Indexing**: Efficient vector indexing with LanceDB
+- 🔌 **IDE Integration**: Works with Continue for in-editor code intelligence
+- 🌐 **HTTP API**: REST endpoint for integration with other tools
 
 ## Quick Start
 
