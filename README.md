@@ -27,8 +27,8 @@ A powerful semantic search tool for git repositories using LanceDB. Search your 
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Clone the repository
-git clone https://github.com/yourusername/git-blame-search.git
-cd git-blame-search
+git clone https://github.com/yourusername/git_blame_search.git
+cd git_blame_search
 
 # Install globally from local directory
 uv tool install .
