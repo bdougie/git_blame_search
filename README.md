@@ -86,6 +86,16 @@ Then ask questions like:
 - `--limit N` - Number of results to return
 - `--file PATH` - Filter blame search by file
 
+## Testing
+
+```bash
+# Run tests
+./run_tests.sh
+
+# Or directly
+uv run python test_git_blame_tool.py
+```
+
 ## License
 
 MIT
