@@ -8,14 +8,14 @@ A powerful semantic search tool for git repositories using LanceDB. Search your 
 - 👤 **Author Attribution**: Find who implemented specific features or functionality
 - 📈 **Code Evolution**: Track how code has changed over time
 - ⚡ **Fast Indexing**: Efficient vector indexing with LanceDB
-- 🔌 **IDE Integration**: Works with Continue for in-editor code intelligence
+- 🔌 **IDE Integration**: FastMCP server for Continue integration
 - 🌐 **HTTP API**: REST endpoint for integration with other tools
 
 ## Quick Start
 
 ### Prerequisites
 
-- Python 3.9+
+- Python 3.10+
 - Git
 - uv (recommended) or pip
 
@@ -107,23 +107,52 @@ git_blame_search index --max-commits 100
 git_blame_search index-file src/main.py
 ```
 
-### 2. [Configure Continue](https://docs.continue.dev/customize/context-providers#built-in-context-providers)
+### 2. FastMCP Server Setup
 
-Add to your `~/.continue/config.yml`:
+The MCP server runs via stdio (not HTTP) and is automatically started by Continue. You don't need to manually start it, but you can test it:
 
-```yml
-mcpServers:
-  - name: git_blame_search
-    command: git_blame_search
-    args:
-      - mcp
-    cwd: "."
+```bash
+# Test the server (will run and wait for MCP messages)
+uv run git_blame_server
+
+# Or directly
+uv run python src/server.py
 ```
 
-### 3. Use in VSCode
+### 3. Configure Continue
 
-- Use `git_blame_search` in Continue chat
-- Ask questions like "who implemented the auth system?"
+Add to your `~/.continue/config.yaml`:
+
+```yaml
+mcpServers:
+  git_blame_search:
+    command: uv
+    args:
+      - run
+      - python
+      - src/server.py
+    cwd: /path/to/git_blame_search
+    env: {}
+```
+
+Or using the installed script (from the project directory):
+
+```yaml
+mcpServers:
+  git_blame_search:
+    command: uv
+    args:
+      - run
+      - git_blame_server
+    cwd: /path/to/git_blame_search
+    env: {}
+```
+
+### 4. Use in VSCode
+
+- The MCP server will provide semantic search tools in Continue
+- Available tools: `search_commits`, `search_blame`, `who_wrote`, `search_code_changes`
+- Ask questions like "who implemented the auth system?" or "find commits about database changes"
 
 ## Example Queries
 
