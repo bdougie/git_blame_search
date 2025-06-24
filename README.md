@@ -128,24 +128,28 @@ mcpServers:
   git_blame_search:
     command: uv
     args:
+      - --directory
+      - /path/to/git_blame_search
       - run
       - python
       - src/server.py
-    cwd: /path/to/git_blame_search
-    env: {}
+    env:
+      TOKENIZERS_PARALLELISM: "false"
 ```
 
-Or using the installed script (from the project directory):
+Or using the installed script:
 
 ```yaml
 mcpServers:
   git_blame_search:
     command: uv
     args:
+      - --directory
+      - /path/to/git_blame_search
       - run
       - git_blame_server
-    cwd: /path/to/git_blame_search
-    env: {}
+    env:
+      TOKENIZERS_PARALLELISM: "false"
 ```
 
 ### 4. Use in VSCode

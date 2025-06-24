@@ -8,3 +8,12 @@ wheels/
 
 # Virtual environments
 .venv
+
+# LanceDB data
+git_blame_lake
+
+# Continue IDE
+.continue/*
+
+# MCP config (keep in repo for Claude)
+.mcp.json
