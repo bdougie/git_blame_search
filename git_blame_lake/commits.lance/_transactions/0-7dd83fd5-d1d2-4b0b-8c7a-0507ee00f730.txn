@@ -1,3 +1,0 @@
-$7dd83fd5-d1d2-4b0b-8c7a-0507ee00f730²¶-commit_hash ÿÿÿÿÿÿÿÿÿ*string08Zdefault/author_name ÿÿÿÿÿÿÿÿÿ*string08Zdefault0author_email ÿÿÿÿÿÿÿÿÿ*string08Zdefault4	timestamp ÿÿÿÿÿÿÿÿÿ*timestamp:s:-08Zdefault+message ÿÿÿÿÿÿÿÿÿ*string08Zdefault/files_changed ÿÿÿÿÿÿÿÿÿ*list08Zdefaultitem *string08Zdefault,	additions ÿÿÿÿÿÿÿÿÿ*int3208Zdefault,	deletions ÿÿÿÿÿÿÿÿÿ*int3208ZdefaultEmessage_vector	 ÿÿÿÿÿÿÿÿÿ*fixed_size_list:float:76808Zdefault"'
-lance.auto_cleanup.older_than14days"!
-lance.auto_cleanup.interval20
