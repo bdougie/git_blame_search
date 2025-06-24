@@ -133,10 +133,10 @@ def search_code_changes(query: str, limit: int = 10) -> str:
         return f"Error searching code changes: {str(e)}"
 
 
-def run_server(host: str = "localhost", port: int = 5000):
+def run_server():
     """Run the FastMCP server"""
-    print(f"Starting Git Blame Search MCP server on {host}:{port}")
-    mcp.run(host=host, port=port)
+    print("Starting Git Blame Search MCP server on stdio")
+    mcp.run()
 
 
 if __name__ == "__main__":

@@ -109,10 +109,10 @@ git_blame_search index-file src/main.py
 
 ### 2. FastMCP Server Setup
 
-Start the FastMCP server on port 5000:
+The MCP server runs via stdio (not HTTP) and is automatically started by Continue. You don't need to manually start it, but you can test it:
 
 ```bash
-# Using the script
+# Test the server (will run and wait for MCP messages)
 uv run git_blame_server
 
 # Or directly
@@ -130,11 +130,12 @@ mcpServers:
     args:
       - run
       - python
-      - /path/to/git_blame_search/src/server.py
+      - src/server.py
+    cwd: /path/to/git_blame_search
     env: {}
 ```
 
-Or using the installed script:
+Or using the installed script (from the project directory):
 
 ```yaml
 mcpServers:
@@ -143,6 +144,7 @@ mcpServers:
     args:
       - run
       - git_blame_server
+    cwd: /path/to/git_blame_search
     env: {}
 ```
 

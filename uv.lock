@@ -400,7 +400,6 @@ dependencies = [
     { name = "pyarrow" },
     { name = "rich" },
     { name = "sentence-transformers" },
-    { name = "uvicorn" },
 ]
 
 [package.dev-dependencies]
@@ -422,7 +421,6 @@ requires-dist = [
     { name = "pyarrow", specifier = ">=14.0.0" },
     { name = "rich", specifier = ">=13.0.0" },
     { name = "sentence-transformers", specifier = ">=2.2.0" },
-    { name = "uvicorn", specifier = ">=0.24.0" },
 ]
 
 [package.metadata.requires-dev]
