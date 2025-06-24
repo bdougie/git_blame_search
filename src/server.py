@@ -6,15 +6,25 @@ Provides semantic search capabilities over git repositories
 
 import sys
 import os
+import warnings
+import logging
+
+# Suppress warnings and logging to stderr
+warnings.filterwarnings("ignore")
+logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fastmcp import FastMCP
 from git_blame_tool import GitBlameIndexer
 from typing import Optional
 
-
-# Initialize the indexer
-indexer = GitBlameIndexer()
+# Redirect stderr to devnull during indexer initialization
+import contextlib
+with contextlib.redirect_stderr(open(os.devnull, 'w')):
+    # Initialize the indexer
+    indexer = GitBlameIndexer()
 
 # Create FastMCP app
 mcp = FastMCP("Git Blame Search")
@@ -135,7 +145,7 @@ def search_code_changes(query: str, limit: int = 10) -> str:
 
 def run_server():
     """Run the FastMCP server"""
-    print("Starting Git Blame Search MCP server on stdio")
+    # Don't print to stdout as it interferes with MCP protocol
     mcp.run()
 
 

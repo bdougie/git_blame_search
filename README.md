@@ -1,127 +1,56 @@
-# Semantic Git Blame Tool
+# Git Blame Search
 
-A powerful semantic search tool for git repositories using LanceDB. Search your git history, find code authors, and understand code evolution using natural language queries.
+Semantic search for git repositories using natural language. Find who wrote code, when changes happened, and why.
 
 ## Features
 
-- 🔍 **Semantic Search**: Search commits, code changes, and blame data using natural language
-- 👤 **Author Attribution**: Find who implemented specific features or functionality
-- 📈 **Code Evolution**: Track how code has changed over time
-- ⚡ **Fast Indexing**: Efficient vector indexing with LanceDB
-- 🔌 **IDE Integration**: FastMCP server for Continue integration
-- 🌐 **HTTP API**: REST endpoint for integration with other tools
+- 🔍 **Natural Language Search** - Search commits and code using plain English
+- 👤 **Author Attribution** - Find who wrote specific code or features
+- 🔌 **IDE Integration** - MCP server for Continue/Claude
+- ⚡ **Fast** - Vector search powered by LanceDB
 
-## Quick Start
+## Installation
 
-### Prerequisites
-
-- Python 3.10+
-- Git
-- uv (recommended) or pip
-
-### Installation
-
-#### Option 1: Global Installation (Recommended)
 ```bash
-# Install uv
+# Install uv if needed
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Clone the repository
+# Clone and install
 git clone https://github.com/yourusername/git_blame_search.git
 cd git_blame_search
-
-# Install globally from local directory
-uv tool install .
-```
-
-#### Option 2: Local Development
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/git_blame_search.git
-cd git_blame_search
-
-# Install dependencies
 uv sync
 ```
 
-## Usage
+## Quick Start
 
 ### 1. Index Your Repository
 
 ```bash
-# Index current repository (recent 100 commits)
-git_blame_search index --max-commits 100
+# Index current directory (last 100 commits)
+uv run git_blame_search index --max-commits 100
 
-# Index a specific repository
-git_blame_search index --repo /path/to/repo --max-commits 500
-
-# For testing with minimal commits (e.g., new repos)
-git_blame_search index --max-commits 1
+# Index another repository
+uv run git_blame_search index --repo /path/to/repo --max-commits 500
 ```
 
-### 2. Index Specific Files for Blame Analysis
+### 2. Search
 
 ```bash
-# Index blame data for important files
-git_blame_search index-file main.py
-git_blame_search index-file src/core/auth.py
-```
+# Search commits
+uv run git_blame_search search "authentication"
+uv run git_blame_search search "bug fix" --limit 20
 
-### 3. Search Commits
+# Find who wrote code
+uv run git_blame_search who "database connection"
+uv run git_blame_search who "error handling"
 
-```bash
-# For testing in a new (this) repository
-git_blame_search search "init"
-
-# Search by natural language
-git_blame_search search "authentication implementation"
-git_blame_search search "bug fix for memory leak"
-git_blame_search search "refactoring database layer" --limit 20
-```
-
-### 4. Semantic Blame Search
-
-```bash
-# Find who wrote specific functionality
-git_blame_search blame "error handling logic"
-git_blame_search blame "database connection" --file src/db.py
-```
-
-### 5. Author Attribution
-
-```bash
-# Find who implemented features
-git_blame_search who "authentication system"
-git_blame_search who "caching implementation"
+# Search with blame context (requires indexing files first)
+uv run git_blame_search blame "validation logic"
 ```
 
 ## Continue Integration
 
-### 1. Index Your Repository First
-
-```bash
-# Index your repository before using MCP. It will take a minute on mature projects.
-git_blame_search index --max-commits 100
-
-# Optionally index specific files for blame analysis
-git_blame_search index-file src/main.py
-```
-
-### 2. FastMCP Server Setup
-
-The MCP server runs via stdio (not HTTP) and is automatically started by Continue. You don't need to manually start it, but you can test it:
-
-```bash
-# Test the server (will run and wait for MCP messages)
-uv run git_blame_server
-
-# Or directly
-uv run python src/server.py
-```
-
-### 3. Configure Continue
-
-Add to your `~/.continue/config.yaml`:
+Add to your Continue config:
 
 ```yaml
 mcpServers:
@@ -132,162 +61,41 @@ mcpServers:
       - python
       - src/server.py
     cwd: /path/to/git_blame_search
-    env: {}
+    env:
+      TOKENIZERS_PARALLELISM: "false"
 ```
 
-Or using the installed script (from the project directory):
+Then ask questions like:
+- "Who wrote the authentication code?"
+- "Find commits about database changes"
+- "Show me bug fixes from last month"
 
-```yaml
-mcpServers:
-  git_blame_search:
-    command: uv
-    args:
-      - run
-      - git_blame_server
-    cwd: /path/to/git_blame_search
-    env: {}
-```
+## Commands
 
-### 4. Use in VSCode
+| Command | Description | Example |
+|---------|-------------|---------|
+| `index` | Index a repository | `uv run git_blame_search index --max-commits 100` |
+| `search` | Search commits | `uv run git_blame_search search "bug fix"` |
+| `who` | Find code authors | `uv run git_blame_search who "authentication"` |
+| `blame` | Search blame data | `uv run git_blame_search blame "error handling"` |
 
-- The MCP server will provide semantic search tools in Continue
-- Available tools: `search_commits`, `search_blame`, `who_wrote`, `search_code_changes`
-- Ask questions like "who implemented the auth system?" or "find commits about database changes"
+### Command Options
 
-## Example Queries
+- `--repo PATH` - Repository to index/search (default: current directory)
+- `--max-commits N` - Number of commits to index
+- `--limit N` - Number of results to return
+- `--file PATH` - Filter blame search by file
 
-### Finding Code Authors
+## Testing
+
 ```bash
-uv run python git_blame_tool.py who "security vulnerability fix"
-uv run python git_blame_tool.py who "REST API implementation"
+# Run tests
+./run_tests.sh
+
+# Or directly
+uv run python test_git_blame_tool.py
 ```
-
-### Understanding Code Evolution
-```bash
-uv run python git_blame_tool.py search "added try-catch blocks"
-uv run python git_blame_tool.py search "refactored to use async/await"
-```
-
-### Blame Analysis
-```bash
-uv run python git_blame_tool.py blame "validate.*email"
-uv run python git_blame_tool.py blame "test_.*authentication" --file tests/
-```
-
-## Architecture
-
-The tool uses:
-- **LanceDB**: Vector database for storing and searching embeddings
-- **Sentence Transformers**: Microsoft's CodeBERT for code-aware embeddings
-- **GitPython**: For parsing git repository data
-- **Rich**: For beautiful CLI output
-
-### Data Schema
-
-**Commits Table**
-- Commit metadata (hash, author, timestamp, message)
-- Files changed, additions, deletions
-- Message vector embeddings
-
-**Blame Table**
-- File path, line number, commit hash
-- Author information and timestamps
-- Code content and vector embeddings
-
-**Diffs Table**
-- Change type, file paths
-- Old and new content
-- Diff chunk vector embeddings
-
-## Performance Tips
-
-### Large Repositories
-
-For repositories with 10k+ commits:
-```python
-# Process in batches
-uv run python git_blame_tool.py index --max-commits 1000 --skip 0
-uv run python git_blame_tool.py index --max-commits 1000 --skip 1000
-```
-
-### Memory Optimization
-```bash
-# Use smaller batches
-uv run python git_blame_tool.py index --max-commits 50
-
-# Increase PyTorch memory
-export PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
-```
-
-### Faster Embeddings
-
-Modify the embedder for speed:
-```python
-# In git_blame_tool.py, change:
-self.embedder = SentenceTransformer('all-MiniLM-L6-v2')  # Faster
-```
-
-## API Reference
-
-### CLI Commands
-
-- `index` - Index a git repository
-  - `--repo, -r` - Repository path (default: current directory)
-  - `--max-commits, -m` - Maximum commits to index
-
-- `index-file` - Index blame data for a specific file
-  - `FILE_PATH` - Path to file to index
-
-- `search` - Search commits
-  - `QUERY` - Natural language search query
-  - `--limit, -l` - Number of results (default: 10)
-
-- `blame` - Search blame data
-  - `QUERY` - Natural language search query
-  - `--file, -f` - Filter by file path
-  - `--limit, -l` - Number of results (default: 5)
-
-- `who` - Find code authors
-  - `QUERY` - Natural language search query
-  - `--limit, -l` - Number of results (default: 5)
-
-- `serve` - Start HTTP server for IDE integration
-
-### HTTP API
-
-`POST /retrieve`
-```json
-{
-  "query": "authentication implementation"
-}
-```
-
-Response:
-```json
-{
-  "results": [
-    {
-      "title": "Commit: Add JWT authentication",
-      "content": "Author: Jane Smith\nDate: 2024-01-15\n\nAdd JWT authentication middleware",
-      "metadata": {
-        "type": "commit",
-        "hash": "a1b2c3d4e5f6"
-      }
-    }
-  ]
-}
-```
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-MIT License - see LICENSE file for details
-
-## Acknowledgments
-
-- Built with [LanceDB](https://lancedb.com) - The multimodal vector database
-- Uses [Microsoft CodeBERT](https://github.com/microsoft/CodeBERT) for code-aware embeddings
-- Integrated with [Continue](https://continue.dev) for IDE support
+MIT
