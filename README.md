@@ -54,13 +54,14 @@ Add to your Continue config:
 
 ```yaml
 mcpServers:
-  git_blame_search:
+  - name: git_blame_search
     command: uv
     args:
+      - --directory
+      - /Users/nate/gh/bdougie/git_blame_search
       - run
       - python
       - src/server.py
-    cwd: /path/to/git_blame_search
     env:
       TOKENIZERS_PARALLELISM: "false"
 ```
